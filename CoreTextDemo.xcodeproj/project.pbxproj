@@ -70,16 +70,24 @@
 				84609FFA1EE8F003003BB3B1 /* UIView+frameAdjust.swift */,
 				84609FE41EE807B8003BB3B1 /* AppDelegate.swift */,
 				84609FE61EE807B8003BB3B1 /* ViewController.swift */,
-				84609FF61EE80860003BB3B1 /* CTDisplayView.swift */,
-				84609FFC1EE8F493003BB3B1 /* CTFrameParserConfig.swift */,
-				84609FFE1EE8F509003BB3B1 /* CTFrameParser.swift */,
-				8460A0001EE8F532003BB3B1 /* CoreTextData.swift */,
+				8460A0021EE94ECE003BB3B1 /* CoreTextView */,
 				84609FE81EE807B8003BB3B1 /* Main.storyboard */,
 				84609FEB1EE807B8003BB3B1 /* Assets.xcassets */,
 				84609FED1EE807B8003BB3B1 /* LaunchScreen.storyboard */,
 				84609FF01EE807B8003BB3B1 /* Info.plist */,
 			);
 			path = CoreTextDemo;
+			sourceTree = "<group>";
+		};
+		8460A0021EE94ECE003BB3B1 /* CoreTextView */ = {
+			isa = PBXGroup;
+			children = (
+				84609FF61EE80860003BB3B1 /* CTDisplayView.swift */,
+				84609FFE1EE8F509003BB3B1 /* CTFrameParser.swift */,
+				84609FFC1EE8F493003BB3B1 /* CTFrameParserConfig.swift */,
+				8460A0001EE8F532003BB3B1 /* CoreTextData.swift */,
+			);
+			name = CoreTextView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

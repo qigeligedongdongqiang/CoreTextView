@@ -22,6 +22,7 @@ class CTDisplayView: UIView {
     override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         
+        //翻转坐标系
         context?.textMatrix = CGAffineTransform.identity
         context?.translateBy(x: 0, y: self.bounds.size.height)
         context?.scaleBy(x: 1, y: -1)

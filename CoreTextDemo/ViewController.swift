@@ -14,16 +14,23 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let ctView = CTDisplayView(frame: view.bounds)
+        let ctView = CTDisplayView()
         view.addSubview(ctView)
+        
+        ctView.backgroundColor = UIColor.yellow
+        ctView.setX(view.x())
+        ctView.setY(view.y()+64)
+        ctView.setWidth(width: view.width())
         
         let config:CTFrameParserConfig = CTFrameParserConfig()
         config.textColor = UIColor.red
         config.width = ctView.width()
+        config.lineSpace = 10
+        config.fontName = "PingFang SC"
+        config.fontSize = 12
         
-        let data = CTFrameParser.frameParser("dd", config: config)
+        let data = CTFrameParser.frameParser("jekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebr", config: config)
         ctView.data = data
-        ctView.backgroundColor = UIColor.white
         ctView.setHeight(height: data.height)
         
         
