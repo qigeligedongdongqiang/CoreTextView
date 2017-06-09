@@ -11,14 +11,14 @@ import UIKit
 class CTFrameParser: NSObject {
     
     class func frameParser(_ content: NSString, config: CTFrameParserConfig) -> CoreTextData {
+
         let attributes = self.attributes(config)
         let contentStr = NSAttributedString(string: content as String, attributes: attributes as? [String : Any])
-        
         let frameSetter = CTFramesetterCreateWithAttributedString(contentStr)
         let restrictSize = CGSize(width: config.width, height: CGFloat(MAXFLOAT))
         let coretextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, restrictSize, nil)
-        
         let textHeight = coretextSize.height
+        
         let frame = self.createFrame(frameSetter, config: config, height: textHeight)
         
         let data = CoreTextData(ctFrame: frame, height: textHeight)

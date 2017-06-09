@@ -27,9 +27,6 @@ class CTDisplayView: UIView {
         context?.translateBy(x: 0, y: self.bounds.size.height)
         context?.scaleBy(x: 1, y: -1)
         
-        let path = CGMutablePath()
-        path.addRect(self.bounds)
-        
         if data != nil {
             CTFrameDraw((self.data?.ctFrame)!, context!)
         }

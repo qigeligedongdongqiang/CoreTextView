@@ -26,10 +26,11 @@ class ViewController: UIViewController {
         config.textColor = UIColor.red
         config.width = ctView.width()
         config.lineSpace = 10
-        config.fontName = "PingFang SC"
+        config.fontName = "PingFangSC-Regular"
         config.fontSize = 12
         
-        let data = CTFrameParser.frameParser("jekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebr", config: config)
+        let content: NSString = "jekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebr"
+        let data = CTFrameParser.frameParser(content, config: config)
         ctView.data = data
         ctView.setHeight(height: data.height)
         
