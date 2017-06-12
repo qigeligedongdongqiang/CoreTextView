@@ -10,6 +10,48 @@ import UIKit
 
 class CTFrameParser: NSObject {
     
+    class func parserTemplateFlie(_ path: NSString, config: CTFrameParserConfig) -> CoreTextData {
+        let content = self.loadTemplateFile(path, config: config)
+        return self.parserAttributedContent(content, config: config)
+    }
+    
+    class func loadTemplateFile(_ path: NSString, config: CTFrameParserConfig) -> NSAttributedString {
+        let data = NSData(contentsOfFile: path as String)
+        let result = NSMutableAttributedString()
+        if (data != nil) {
+            let array:NSArray = try! JSONSerialization.jsonObject(with: data! as Data, options: JSONSerialization.ReadingOptions.mutableContainers) as! NSArray
+            if array.isKind(of: NSArray.self) {
+                for dic in array {
+                    if let dict = dic as? NSDictionary {
+                        let type = dict["type"]
+                        if type as! String == "text" {
+                            let attributedStr = self.parserAttributedContentConvert(dict, config: config)
+                            result.append(attributedStr)
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    }
+    
+    class func parserAttributedContentConvert(_ dict: NSDictionary, config: CTFrameParserConfig) -> NSAttributedString {
+        let attributes = self.attributes(config)
+        
+        
+    }
+    
+    class func colorFromTemplate(_ name: NSString) -> UIColor {
+        if name == "blue" {
+            return UIColor.blue
+        }
+        return UIColor.black
+    }
+    
+    class func parserAttributedContent(_ content: NSAttributedString, config: CTFrameParserConfig) -> CoreTextData {
+        
+    }
+    
     class func frameParser(_ content: NSString, config: CTFrameParserConfig) -> CoreTextData {
 
         let attributes = self.attributes(config)
