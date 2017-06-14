@@ -13,5 +13,5 @@ class CTFrameParserConfig: NSObject {
     var fontName: NSString = "PingFangSC-Regular"
     var fontSize: CGFloat = 17.0
     var lineSpace: CGFloat = 0.0
-    var textColor = RGBA(r: 0, g: 0, b: 0, a: 1)
+    var textColor = ColorRGBA(r: 0, g: 0, b: 0, a: 1)
 }

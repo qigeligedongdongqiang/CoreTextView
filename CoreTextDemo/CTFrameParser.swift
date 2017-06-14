@@ -24,7 +24,7 @@ class CTFrameParser: NSObject {
                 for dic in array {
                     if let dict = dic as? NSDictionary {
                         let type = dict["type"]
-                        if type as! String == "text" {
+                        if (type as! NSString).isEqual(to:"txt") {
                             let attributedStr = self.parserAttributedContentConvert(dict, config: config)
                             result.append(attributedStr)
                         }
@@ -36,27 +36,30 @@ class CTFrameParser: NSObject {
     }
     
     class func parserAttributedContentConvert(_ dict: NSDictionary, config: CTFrameParserConfig) -> NSAttributedString {
-        let attributes = self.attributes(config)
+        let attributes:NSMutableDictionary = self.attributes(config) as! NSMutableDictionary
         
-        
-    }
-    
-    class func colorFromTemplate(_ name: NSString) -> UIColor {
-        if name == "blue" {
-            return UIColor.blue
+        let colorStr = (dict["color"]) as? String
+        if (colorStr != nil) {
+            let hexValue = Int(strtoul(colorStr, nil, 16))
+            let color = ColorHEX(hexValue: hexValue)
+            attributes.setObject(color, forKey: kCTForegroundColorAttributeName as! NSCopying)
         }
-        return UIColor.black
+        
+        let fontSize = dict["fontSize"] as? CGFloat
+        if (fontSize != nil) {
+            if (fontSize! > 0) {
+                let font = CTFontCreateWithName(config.fontName as CFString?, fontSize!, nil)
+                attributes.setObject(font, forKey: kCTFontAttributeName as! NSCopying)
+            }
+        }
+        
+        let content = dict["content"] as! NSString
+        
+        return NSAttributedString(string: content as String, attributes: attributes.copy() as? [String : Any])
     }
     
     class func parserAttributedContent(_ content: NSAttributedString, config: CTFrameParserConfig) -> CoreTextData {
-        
-    }
-    
-    class func frameParser(_ content: NSString, config: CTFrameParserConfig) -> CoreTextData {
-
-        let attributes = self.attributes(config)
-        let contentStr = NSAttributedString(string: content as String, attributes: attributes as? [String : Any])
-        let frameSetter = CTFramesetterCreateWithAttributedString(contentStr)
+        let frameSetter = CTFramesetterCreateWithAttributedString(content)
         let restrictSize = CGSize(width: config.width, height: CGFloat(MAXFLOAT))
         let coretextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, restrictSize, nil)
         let textHeight = coretextSize.height
@@ -67,6 +70,22 @@ class CTFrameParser: NSObject {
         
         return data
     }
+    
+//    class func frameParser(_ content: NSString, config: CTFrameParserConfig) -> CoreTextData {
+//
+//        let attributes = self.attributes(config)
+//        let contentStr = NSAttributedString(string: content as String, attributes: attributes as? [String : Any])
+//        let frameSetter = CTFramesetterCreateWithAttributedString(contentStr)
+//        let restrictSize = CGSize(width: config.width, height: CGFloat(MAXFLOAT))
+//        let coretextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, restrictSize, nil)
+//        let textHeight = coretextSize.height
+//        
+//        let frame = self.createFrame(frameSetter, config: config, height: textHeight)
+//        
+//        let data = CoreTextData(ctFrame: frame, height: textHeight)
+//        
+//        return data
+//    }
     
     // MARK: ------设置描述------
     class func attributes(_ config: CTFrameParserConfig) -> NSDictionary {

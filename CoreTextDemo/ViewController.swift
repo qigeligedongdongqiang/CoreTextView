@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         let ctView = CTDisplayView()
         view.addSubview(ctView)
         
-        ctView.backgroundColor = UIColor.yellow
+        ctView.backgroundColor = UIColor.white
         ctView.setX(view.x())
         ctView.setY(view.y()+64)
         ctView.setWidth(width: view.width())
@@ -29,11 +29,10 @@ class ViewController: UIViewController {
         config.fontName = "PingFangSC-Regular"
         config.fontSize = 12
         
-        let content: NSString = "jekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebrjekhdeiuewqjeauihequwibweibdniwjbdnuijwebdiebr"
-        let data = CTFrameParser.frameParser(content, config: config)
+        let path = Bundle.main.path(forResource: "template", ofType: "json")
+        let data = CTFrameParser.parserTemplateFlie(path! as NSString , config: config)
         ctView.data = data
         ctView.setHeight(height: data.height)
-        
         
     }
 
