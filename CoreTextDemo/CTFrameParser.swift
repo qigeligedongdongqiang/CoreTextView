@@ -10,11 +10,13 @@ import UIKit
 
 class CTFrameParser: NSObject {
     
+    // MARK: ------处理模板文件并返回数据源------
     class func parserTemplateFlie(_ path: NSString, config: CTFrameParserConfig) -> CoreTextData {
         let content = self.loadTemplateFile(path, config: config)
         return self.parserAttributedContent(content, config: config)
     }
     
+    // MARK: ------加载模板文件------
     class func loadTemplateFile(_ path: NSString, config: CTFrameParserConfig) -> NSAttributedString {
         let data = NSData(contentsOfFile: path as String)
         let result = NSMutableAttributedString()
@@ -24,8 +26,11 @@ class CTFrameParser: NSObject {
                 for dic in array {
                     if let dict = dic as? NSDictionary {
                         let type = dict["type"]
-                        if (type as! NSString).isEqual(to:"txt") {
+                        if ((type as! NSString).isEqual(to:"txt")) {
                             let attributedStr = self.parserAttributedContentConvert(dict, config: config)
+                            result.append(attributedStr)
+                        } else if ((type as! NSString).isEqual(to:"img")) {
+                            let attributedStr = self.parserAttributedImageConvert(dict, config: config)
                             result.append(attributedStr)
                         }
                     }
@@ -35,16 +40,24 @@ class CTFrameParser: NSObject {
         return result
     }
     
+    // MARK: ------设置文字模板描述------
     class func parserAttributedContentConvert(_ dict: NSDictionary, config: CTFrameParserConfig) -> NSAttributedString {
         let attributes:NSMutableDictionary = self.attributes(config) as! NSMutableDictionary
         
+        //colorConvert
         let colorStr = (dict["color"]) as? String
         if (colorStr != nil) {
-            let hexValue = Int(strtoul(colorStr, nil, 16))
-            let color = ColorHEX(hexValue: hexValue)
+            var color:UIColor!
+            if (colorStr == "default") {
+                color = ColorRGBA(r: 0, g: 0, b: 0, a: 1)
+            } else {
+                let hexValue = Int(strtoul(colorStr, nil, 16))
+                color = ColorHEX(hexValue: hexValue)
+            }
             attributes.setObject(color, forKey: kCTForegroundColorAttributeName as! NSCopying)
         }
         
+        //fontConvert
         let fontSize = dict["fontSize"] as? CGFloat
         if (fontSize != nil) {
             if (fontSize! > 0) {
@@ -58,36 +71,15 @@ class CTFrameParser: NSObject {
         return NSAttributedString(string: content as String, attributes: attributes.copy() as? [String : Any])
     }
     
-    class func parserAttributedContent(_ content: NSAttributedString, config: CTFrameParserConfig) -> CoreTextData {
-        let frameSetter = CTFramesetterCreateWithAttributedString(content)
-        let restrictSize = CGSize(width: config.width, height: CGFloat(MAXFLOAT))
-        let coretextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, restrictSize, nil)
-        let textHeight = coretextSize.height
-        
-        let frame = self.createFrame(frameSetter, config: config, height: textHeight)
-        
-        let data = CoreTextData(ctFrame: frame, height: textHeight)
-        
-        return data
+    // MARK: ------设置图片模板描述------
+    class func parserAttributedImageConvert(_ dict: NSDictionary, config: CTFrameParserConfig) -> NSAttributedString {
+        var callbacks: CTRunDelegateCallbacks?
+        memset(&callbacks, 0, MemoryLayout<CTRunDelegateCallbacks>.size)
+        callbacks?.version = kCTRunDelegateVersion1
+//        callbacks?.getAscent = ascnt
     }
     
-//    class func frameParser(_ content: NSString, config: CTFrameParserConfig) -> CoreTextData {
-//
-//        let attributes = self.attributes(config)
-//        let contentStr = NSAttributedString(string: content as String, attributes: attributes as? [String : Any])
-//        let frameSetter = CTFramesetterCreateWithAttributedString(contentStr)
-//        let restrictSize = CGSize(width: config.width, height: CGFloat(MAXFLOAT))
-//        let coretextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, restrictSize, nil)
-//        let textHeight = coretextSize.height
-//        
-//        let frame = self.createFrame(frameSetter, config: config, height: textHeight)
-//        
-//        let data = CoreTextData(ctFrame: frame, height: textHeight)
-//        
-//        return data
-//    }
-    
-    // MARK: ------设置描述------
+    // MARK: ------设置初始化描述------
     class func attributes(_ config: CTFrameParserConfig) -> NSDictionary {
         //设置字体
         let fontName = config.fontName
@@ -108,6 +100,20 @@ class CTFrameParser: NSObject {
         dict.setObject(textColor.cgColor, forKey: kCTForegroundColorAttributeName as! NSCopying)
         
         return dict
+    }
+    
+    // MARK: ------获取数据源------
+    class func parserAttributedContent(_ content: NSAttributedString, config: CTFrameParserConfig) -> CoreTextData {
+        let frameSetter = CTFramesetterCreateWithAttributedString(content)
+        let restrictSize = CGSize(width: config.width, height: CGFloat(MAXFLOAT))
+        let coretextSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 0), nil, restrictSize, nil)
+        let textHeight = coretextSize.height
+        
+        let frame = self.createFrame(frameSetter, config: config, height: textHeight)
+        
+        let data = CoreTextData(ctFrame: frame, height: textHeight)
+        
+        return data
     }
     
     // MARK: ------创建frame------
