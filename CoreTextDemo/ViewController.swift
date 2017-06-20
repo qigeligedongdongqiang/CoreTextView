@@ -17,17 +17,14 @@ class ViewController: UIViewController {
         let ctView = CTDisplayView()
         view.addSubview(ctView)
         
-        ctView.backgroundColor = UIColor.white
+        ctView.backgroundColor = UIColor.gray
         ctView.setX(view.x())
         ctView.setY(view.y()+64)
         ctView.setWidth(width: view.width())
         
         let config:CTFrameParserConfig = CTFrameParserConfig()
-        config.textColor = UIColor.red
         config.width = ctView.width()
         config.lineSpace = 10
-        config.fontName = "PingFangSC-Regular"
-        config.fontSize = 12
         
         let path = Bundle.main.path(forResource: "template", ofType: "json")
         let data = CTFrameParser.parserTemplateFlie(path! as NSString , config: config)

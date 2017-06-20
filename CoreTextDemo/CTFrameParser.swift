@@ -29,10 +29,11 @@ class CTFrameParser: NSObject {
                         if ((type as! NSString).isEqual(to:"txt")) {
                             let attributedStr = self.parserAttributedContentConvert(dict, config: config)
                             result.append(attributedStr)
-                        } else if ((type as! NSString).isEqual(to:"img")) {
-                            let attributedStr = self.parserAttributedImageConvert(dict, config: config)
-                            result.append(attributedStr)
                         }
+//                        else if ((type as! NSString).isEqual(to:"img")) {
+//                            let attributedStr = self.parserAttributedImageConvert(dict, config: config)
+//                            result.append(attributedStr)
+//                        }
                     }
                 }
             }
@@ -46,59 +47,57 @@ class CTFrameParser: NSObject {
         
         //colorConvert
         let colorStr = (dict["color"]) as? String
-        if (colorStr != nil) {
-            var color:UIColor!
-            if (colorStr == "default") {
-                color = ColorRGBA(r: 0, g: 0, b: 0, a: 1)
-            } else {
-                let hexValue = Int(strtoul(colorStr, nil, 16))
-                color = ColorHEX(hexValue: hexValue)
-            }
+        if (colorStr != nil && colorStr != "default") {
+            let hexValue = Int(strtoul(colorStr, nil, 16))
+            let color = ColorHEX(hexValue: hexValue)
             attributes.setObject(color, forKey: kCTForegroundColorAttributeName as! NSCopying)
         }
         
         //fontConvert
-        let fontSize = dict["fontSize"] as? CGFloat
-        if (fontSize != nil) {
-            if (fontSize! > 0) {
-                let font = CTFontCreateWithName(config.fontName as CFString?, fontSize!, nil)
-                attributes.setObject(font, forKey: kCTFontAttributeName as! NSCopying)
-            }
+        var fontName = dict["fontName"] as? String
+        var fontSize = dict["fontSize"] as? CGFloat
+        if (fontName == nil || fontName == "default") {
+           fontName = config.fontName as String
         }
-        
+        if (fontSize == nil || fontSize! <= 0) {
+           fontSize = config.fontSize
+        }
+        let font = CTFontCreateWithName(fontName as CFString?, fontSize!, nil)
+        attributes.setObject(font, forKey: kCTFontAttributeName as! NSCopying)
+    
         let content = dict["content"] as! NSString
         
         return NSAttributedString(string: content as String, attributes: attributes.copy() as? [String : Any])
     }
     
     // MARK: ------设置图片模板描述------
-    class func parserAttributedImageConvert(_ dict: NSDictionary, config: CTFrameParserConfig) -> NSAttributedString {
-        var callbacks: CTRunDelegateCallbacks?
-        memset(&callbacks, 0, MemoryLayout<CTRunDelegateCallbacks>.size)
-        callbacks?.version = kCTRunDelegateVersion1
-        callbacks?.getAscent = { (ref) -> CGFloat in
-            let dic:NSDictionary = unsafeBitCast(ref, to: NSDictionary.self)
-            return dic.object(forKey: "height") as! CGFloat
-        }
-        callbacks?.getDescent = { (ref) -> CGFloat in
-            return 0
-        }
-        callbacks?.getWidth = { (ref) -> CGFloat in
-            let dic:NSDictionary = unsafeBitCast(ref, to: NSDictionary.self)
-            return dic.object(forKey: "width") as! CGFloat
-        }
-        var refcon = dict
-        let delegate: CTRunDelegate = CTRunDelegateCreate(&callbacks!, &refcon)!
-        
-        var objectReplacementChar: unichar = 0xFFFC
-        let content: NSString = NSString(characters: &objectReplacementChar, length: 1)
-        let attributes = self.attributes(config)
-        
-        let space = NSMutableAttributedString(string: content as String, attributes: attributes as? [String : Any])
-        CFAttributedStringSetAttribute(space, CFRangeMake(0, 1), kCTRunDelegateAttributeName, delegate)
-        
-        return space
-    }
+//    class func parserAttributedImageConvert(_ dict: NSDictionary, config: CTFrameParserConfig) -> NSAttributedString {
+//        var callbacks: CTRunDelegateCallbacks?
+//        memset(&callbacks, 0, MemoryLayout<CTRunDelegateCallbacks>.size)
+//        callbacks?.version = kCTRunDelegateVersion1
+//        callbacks?.getAscent = { (ref) -> CGFloat in
+//            let dic:NSDictionary = unsafeBitCast(ref, to: NSDictionary.self)
+//            return dic.object(forKey: "height") as! CGFloat
+//        }
+//        callbacks?.getDescent = { (ref) -> CGFloat in
+//            return 0
+//        }
+//        callbacks?.getWidth = { (ref) -> CGFloat in
+//            let dic:NSDictionary = unsafeBitCast(ref, to: NSDictionary.self)
+//            return dic.object(forKey: "width") as! CGFloat
+//        }
+//        var refcon = dict
+//        let delegate: CTRunDelegate = CTRunDelegateCreate(&callbacks!, &refcon)!
+//        
+//        var objectReplacementChar: unichar = 0xFFFC
+//        let content: NSString = NSString(characters: &objectReplacementChar, length: 1)
+//        let attributes = self.attributes(config)
+//        
+//        let space = NSMutableAttributedString(string: content as String, attributes: attributes as? [String : Any])
+//        CFAttributedStringSetAttribute(space, CFRangeMake(0, 1), kCTRunDelegateAttributeName, delegate)
+//        
+//        return space
+//    }
     
     
     // MARK: ------设置初始化描述------

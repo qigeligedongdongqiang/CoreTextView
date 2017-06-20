@@ -1,26 +1,37 @@
  [
   {
   "type": "txt",
-  "content": "qeqwewqeqwe",
-  "fontSize": 16,
+  "content": "This is a ",
+  "fontName": "default",
+  "fontSize": 0,
   "color": "default"
   },
   {
   "type": "txt",
-  "content": "r23233324",
-  "fontSize": 20,
+  "content": "simple attributeString ",
+  "fontName": "Snell Roundhand Bold",
+  "fontSize": 26,
   "color": "0xe7292e"
   },
   {
   "type": "txt",
-  "content": "',;wr'w;rr'w;r",
-  "fontSize": 10,
+  "content": "demo, ",
+  "fontName": "PingFangSC-Light",
+  "fontSize": 18,
   "color": "0xf9f9f9"
   },
   {
   "type": "txt",
-  "content": "weorjjfmccdknd",
-  "fontSize": 24,
-  "color": "0x666666"
+  "content": "you can use it ",
+  "fontName": "PingFangSC-Bold",
+  "fontSize": 13,
+  "color": "0x85d64d"
+  },
+  {
+  "type": "txt",
+  "content": "by adding a json template.",
+  "fontName": "Papyrus",
+  "fontSize": 20,
+  "color": "0x333333"
   }
   ]
