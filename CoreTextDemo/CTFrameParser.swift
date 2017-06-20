@@ -76,8 +76,30 @@ class CTFrameParser: NSObject {
         var callbacks: CTRunDelegateCallbacks?
         memset(&callbacks, 0, MemoryLayout<CTRunDelegateCallbacks>.size)
         callbacks?.version = kCTRunDelegateVersion1
-//        callbacks?.getAscent = ascnt
+        callbacks?.getAscent = { (ref) -> CGFloat in
+            let dic:NSDictionary = unsafeBitCast(ref, to: NSDictionary.self)
+            return dic.object(forKey: "height") as! CGFloat
+        }
+        callbacks?.getDescent = { (ref) -> CGFloat in
+            return 0
+        }
+        callbacks?.getWidth = { (ref) -> CGFloat in
+            let dic:NSDictionary = unsafeBitCast(ref, to: NSDictionary.self)
+            return dic.object(forKey: "width") as! CGFloat
+        }
+        var refcon = dict
+        let delegate: CTRunDelegate = CTRunDelegateCreate(&callbacks!, &refcon)!
+        
+        var objectReplacementChar: unichar = 0xFFFC
+        let content: NSString = NSString(characters: &objectReplacementChar, length: 1)
+        let attributes = self.attributes(config)
+        
+        let space = NSMutableAttributedString(string: content as String, attributes: attributes as? [String : Any])
+        CFAttributedStringSetAttribute(space, CFRangeMake(0, 1), kCTRunDelegateAttributeName, delegate)
+        
+        return space
     }
+    
     
     // MARK: ------设置初始化描述------
     class func attributes(_ config: CTFrameParserConfig) -> NSDictionary {
