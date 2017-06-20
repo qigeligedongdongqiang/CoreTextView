@@ -66,5 +66,6 @@ next,you can add a displayView and custom like this:
         ctView.setHeight(height: data.height)
 ```
 then you can see it.
+
 ![preview](preview.png)
 
